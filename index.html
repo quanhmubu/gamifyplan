@@ -3,173 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning Adventure Plan</title>
-  <!-- Line below: Adds a modern, clean font from Google Fonts -->
+  <title>Brainopoly Game</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Line below: Basic reset for margins and padding to ensure consistent styling */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Line below: Sets the font and background color to match Notion's aesthetic */
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #ffffff; /* Light mode background */
-      color: #37352f; /* Light mode text color */
-      padding: 16px;
-      border-radius: 8px;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
-
-    /* Line below: Ensures the page looks good in Notion's dark mode */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #2d2d2d; /* Dark mode background */
-        color: #ffffff; /* Dark mode text color */
-      }
-    }
-
-    /* Line below: Styles the header with a playful, gamified look */
     h1 {
       font-size: 24px;
-      font-weight: 600;
-      color: #ff6b6b; /* Fun, vibrant color */
-      margin-bottom: 16px;
+      color: #ff6b6b;
     }
-
-    h2 {
-      font-size: 20px;
-      font-weight: 500;
-      color: #4ecdc4; /* Calm, inviting color */
-      margin-top: 24px;
-      margin-bottom: 12px;
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 5px;
+      width: 500px;
+      height: 500px;
+      margin: 20px auto;
+      background: #eee;
+      border: 5px solid #333;
     }
-
-    /* Line below: Styles the XP progress bar */
-    .xp-progress {
-      width: 100%;
-      background-color: #e0e0e0;
+    .board-cell {
+      background: #fff;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .xp-progress-bar {
-      height: 10px;
-      background-color: #ff6b6b;
-      width: 0%; /* Updated dynamically with JavaScript */
-    }
-
-    /* Line below: Styles the task checklists */
-    .task-list {
-      list-style: none;
-      margin-bottom: 16px;
-    }
-
-    .task-item {
       display: flex;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .task-item input[type="checkbox"] {
-      margin-right: 8px;
-    }
-
-    /* Line below: Styles the Wheel of Progress */
-    .wheel-container {
+      font-size: 14px;
+      font-weight: bold;
+      color: #555;
       text-align: center;
-      margin: 24px 0;
+      cursor: pointer;
     }
-
-    .wheel-button {
+    .board-cell.active {
+      background: #4ecdc4;
+      color: white;
+    }
+    .corner-cell {
+      background: #ff6b6b;
+      color: white;
+    }
+    .special-cell {
+      background: #ffd700;
+    }
+    textarea {
+      width: 80%;
+      height: 100px;
+      margin: 20px auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
       background-color: #4ecdc4;
       color: white;
       border: none;
-      padding: 10px 20px;
       border-radius: 8px;
-      cursor: pointer;
       font-size: 16px;
+      cursor: pointer;
     }
-
-    .wheel-button:hover {
+    button:hover {
       background-color: #3aa99f;
-    }
-
-    /* Line below: Styles the reflection journal */
-    .journal {
-      width: 100%;
-      height: 100px;
-      padding: 8px;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      margin-top: 16px;
-      font-family: 'Inter', sans-serif;
     }
   </style>
 </head>
 <body>
-  <!-- Line below: Header for the gamified learning adventure -->
-  <h1>🚀 Gamified Daily & Weekly Schedule: Learning Adventure Plan 🎲</h1>
-
-  <!-- Line below: XP Progress Bar -->
-  <div class="xp-progress">
-    <div class="xp-progress-bar" id="xpBar"></div>
-  </div>
-
-  <!-- Line below: Daily Quests Section -->
-  <h2>🌟 Daily Routine Gamified</h2>
-  <ul class="task-list" id="dailyQuests">
-    <li class="task-item">
-      <input type="checkbox" id="morningTasks" onchange="updateXP(10)">
-      <label for="morningTasks">Complete Morning Tasks (+10 XP)</label>
-    </li>
-    <li class="task-item">
-      <input type="checkbox" id="middayTasks" onchange="updateXP(10)">
-      <label for="middayTasks">Complete Midday Tasks (+10 XP)</label>
-    </li>
-    <li class="task-item">
-      <input type="checkbox" id="eveningTasks" onchange="updateXP(5)">
-      <label for="eveningTasks">Complete Evening Tasks (+5 XP)</label>
-    </li>
-  </ul>
-
-  <!-- Line below: Wheel of Progress Section -->
-  <div class="wheel-container">
-    <h2>🎲 Spin the Wheel of Progress</h2>
-    <button class="wheel-button" onclick="spinWheel()">Spin the Wheel</button>
-    <p id="wheelResult"></p>
-  </div>
-
-  <!-- Line below: Reflection Journal Section -->
+  <h1>🎮 Brainopoly Game</h1>
+  <div class="game-board" id="gameBoard"></div>
   <h2>📔 Reflection Journal</h2>
-  <textarea class="journal" placeholder="Write your reflections here..."></textarea>
+  <textarea id="journal" placeholder="Write your reflections..."></textarea>
+  <button onclick="saveJournal()">Save Journal</button>
+  <p id="saveMessage"></p>
 
   <script>
-    // Line below: Tracks the user's total XP
-    let totalXP = 0;
+    // Dynamic configuration for game board content
+    const boardContent = [
+      "Start", "Task 1", "? Chance", "Treasure", "Boss Fight",
+      "Task 2", "Empty", "? Chance", "Treasure", "Task 3",
+      "? Chance", "Task 4", "Center", "Task 5", "Treasure",
+      "Treasure", "Task 6", "? Chance", "Task 7", "Boss Fight",
+      "Free Parking", "Task 8", "Treasure", "? Chance", "End"
+    ];
 
-    // Line below: Updates the XP progress bar and total XP
-    function updateXP(points) {
-      totalXP += points;
-      document.getElementById('xpBar').style.width = (totalXP / 100) * 100 + '%';
-      alert(`+${points} XP! Total XP: ${totalXP}`);
+    const gameBoard = document.getElementById("gameBoard");
+    let playerPosition = 0;
+
+    // Initialize the game board
+    function initializeBoard() {
+      boardContent.forEach((content, index) => {
+        const cell = document.createElement("div");
+        cell.className = "board-cell";
+        if (index === 0 || index === 24) cell.classList.add("corner-cell");
+        if (content === "? Chance") cell.classList.add("special-cell");
+        if (content === "Treasure") cell.classList.add("special-cell");
+        cell.textContent = content;
+        cell.onclick = () => movePlayer(index);
+        gameBoard.appendChild(cell);
+      });
+      updatePlayerPosition();
     }
 
-    // Line below: Simulates spinning the Wheel of Progress
-    function spinWheel() {
-      const methods = [
-        "Explain the topic in your own words",
-        "Find a real-world example of the concept",
-        "Make a quick mind map",
-        "Write 3 questions you have about this topic",
-        "Sketch it, voice record it, or create a silly story about it"
-      ];
-      const result = methods[Math.floor(Math.random() * methods.length)];
-      document.getElementById('wheelResult').textContent = `🎡 ${result}`;
+    // Move the player
+    function movePlayer(newPosition) {
+      const cells = document.querySelectorAll(".board-cell");
+      cells[playerPosition].classList.remove("active");
+      playerPosition = newPosition;
+      cells[playerPosition].classList.add("active");
     }
+
+    // Update the player's position visually
+    function updatePlayerPosition() {
+      const cells = document.querySelectorAll(".board-cell");
+      cells[playerPosition].classList.add("active");
+    }
+
+    // Save the journal content to local storage
+    function saveJournal() {
+      const journalContent = document.getElementById("journal").value;
+      localStorage.setItem("reflectionJournal", journalContent);
+      document.getElementById("saveMessage").textContent = "Journal saved!";
+      setTimeout(() => {
+        document.getElementById("saveMessage").textContent = "";
+      }, 2000);
+    }
+
+    // Load the journal content from local storage
+    function loadJournal() {
+      const savedContent = localStorage.getItem("reflectionJournal");
+      if (savedContent) {
+        document.getElementById("journal").value = savedContent;
+      }
+    }
+
+    // Initialize everything
+    initializeBoard();
+    loadJournal();
   </script>
 </body>
 </html>
